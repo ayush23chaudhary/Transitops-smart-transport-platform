@@ -25,40 +25,54 @@ export const KPICard: React.FC<KPICardProps> = ({
     return (
       <div className="bg-white border border-slate-200 rounded-lg p-5 animate-pulse">
         <div className="flex justify-between items-start mb-4">
-          <div className="h-4 bg-slate-200 rounded w-24"></div>
-          <div className="h-8 bg-slate-200 rounded-full w-8"></div>
+          <div className="h-3 bg-slate-200 rounded w-20" />
+          <div className="h-7 bg-slate-200 rounded w-7" />
         </div>
-        <div className="h-8 bg-slate-200 rounded w-16 mb-2"></div>
-        <div className="h-4 bg-slate-200 rounded w-32"></div>
+        <div className="h-8 bg-slate-200 rounded w-14 mb-2" />
+        <div className="h-2.5 bg-slate-200 rounded w-28" />
       </div>
     );
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-5">
-      <div className="flex justify-between items-start">
-        <div>
-          <span className="text-xs font-mono uppercase tracking-wider text-slate-500">{title}</span>
-          <h4 className="text-2xl font-bold text-slate-900 mt-2 font-mono tabular-nums">{value}</h4>
-        </div>
-        <div className="p-2 bg-slate-50 border border-slate-100 rounded text-slate-600">
-          <Icon className="h-4 w-4" />
+    <div className="bg-white border border-slate-200 rounded-lg p-5 group hover:border-slate-300 transition-colors relative overflow-hidden">
+      {/* Top-right icon */}
+      <div className="flex justify-between items-start mb-3">
+        <span className="text-xxs font-mono uppercase tracking-widest text-slate-400 font-semibold">
+          {title}
+        </span>
+        <div className="p-1.5 bg-slate-50 border border-slate-100 rounded text-slate-500">
+          <Icon className="h-3.5 w-3.5" />
         </div>
       </div>
+
+      {/* Value */}
+      <div className="text-3xl font-bold text-slate-900 font-mono tabular-nums leading-none mb-2">
+        {value}
+      </div>
+
+      {/* Description / Trend */}
       {(description || trend) && (
-        <div className="mt-3 flex items-center space-x-2 text-xs">
+        <div className="flex items-center gap-2 text-xxs mt-2">
           {trend && (
             <span
-              className={`font-semibold ${
-                trend.isPositive ? 'text-green-600' : 'text-red-600'
+              className={`font-mono font-bold ${
+                trend.isPositive ? 'text-emerald-600' : 'text-red-500'
               }`}
             >
-              {trend.value}
+              {trend.isPositive ? '↑' : '↓'} {trend.value}
             </span>
           )}
-          {description && <span className="text-slate-500 font-medium">{description}</span>}
+          {description && (
+            <span className="text-slate-400 font-mono uppercase tracking-wider">
+              {description}
+            </span>
+          )}
         </div>
       )}
+
+      {/* Bottom accent line — a thin brand-color underline that appears on hover */}
+      <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-brand-500 group-hover:w-full transition-all duration-500" />
     </div>
   );
 };

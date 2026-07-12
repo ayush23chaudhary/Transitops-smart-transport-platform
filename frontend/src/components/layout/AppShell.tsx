@@ -69,7 +69,16 @@ export const AppShell: React.FC = () => {
           onMobileMenuToggle={() => setMobileMenuOpen(true)}
         />
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-7xl mx-auto">
+          <div
+            className="max-w-7xl mx-auto"
+            style={{ animation: 'page-enter 0.2s ease-out' }}
+          >
+            <style>{`
+              @keyframes page-enter {
+                from { opacity: 0; transform: translateY(6px); }
+                to   { opacity: 1; transform: translateY(0); }
+              }
+            `}</style>
             <Outlet />
           </div>
         </main>
