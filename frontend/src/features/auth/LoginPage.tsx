@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { api } from '../../lib/api';
+import { authService } from './auth.service';
+import type { UserSession } from './auth.types';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('dispatcher@transitops.com');
@@ -17,9 +18,9 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const response: any = await api.post('/auth/login', { email, password });
+      const response = await authService.login(email, password);
       localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      localStorage.setItem('user', JSON.stringify(response.user as UserSession));
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Invalid credentials');
