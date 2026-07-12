@@ -11,13 +11,15 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  X,
 } from 'lucide-react';
 
 interface SidebarProps {
   collapsed: boolean;
-  setCollapsed: (collapsed: boolean) => void;
+  setCollapsed?: (collapsed: boolean) => void;
   user: { name: string; email: string; role: string } | null;
   onLogout: () => void;
+  onClose?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -25,6 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setCollapsed,
   user,
   onLogout,
+  onClose,
 }) => {
   const navItems = [
     { name: 'Overview', to: '/dashboard', icon: LayoutDashboard },
@@ -38,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <div
-      className={`bg-slate-900 text-slate-100 flex flex-col justify-between border-r border-slate-800 transition-all duration-300 ${
+      className={`bg-slate-900 text-slate-100 flex flex-col justify-between border-r border-slate-800 transition-all duration-300 h-full ${
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
@@ -53,12 +56,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {collapsed && (
             <span className="text-xl font-bold text-brand-500 mx-auto">TO</span>
           )}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-100"
-          >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </button>
+          <div className="flex items-center gap-1.5">
+            {setCollapsed && (
+              <button
+                onClick={() => setCollapsed(!collapsed)}
+                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-100 hidden md:block"
+              >
+                {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+              </button>
+            )}
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-100 md:hidden"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Navigation Items */}
@@ -70,7 +85,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className={({ isActive }) =>
                 `flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-brand-600 text-white'
+                    ? 'bg-brand-600 text-white shadow-sm'
                     : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
                 } ${collapsed ? 'justify-center' : ''}`
               }
@@ -86,9 +101,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* User Session Info / Logout */}
       <div className="border-t border-slate-800 p-4">
         {!collapsed && user && (
-          <div className="mb-4">
+          <div className="mb-4 bg-slate-950/40 p-3 rounded-lg border border-slate-800/80">
             <p className="text-sm font-semibold text-slate-200 truncate">{user.name}</p>
-            <p className="text-xs text-slate-500 truncate">{user.role}</p>
+            <p className="text-xs text-brand-400 font-medium truncate mt-0.5">
+              {user.role.replace('_', ' ')}
+            </p>
           </div>
         )}
         <button
