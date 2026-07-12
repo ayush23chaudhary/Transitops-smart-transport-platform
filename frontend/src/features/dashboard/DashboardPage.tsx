@@ -101,25 +101,25 @@ export const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Recent Trips & Operations */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Recent Dispatches</h3>
+                <h3 className="text-sm font-mono uppercase tracking-wider text-slate-800 font-bold">Recent Dispatches</h3>
                 <p className="text-xs text-slate-500">Latest scheduled or active dispatches</p>
               </div>
-              <span className="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">
-                {trips?.length ?? 0} Total Trips
+              <span className="text-xs bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded font-mono font-medium">
+                {trips?.length ?? 0} TOTAL
               </span>
             </div>
             
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-sm">
+              <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-slate-50/75 border-b border-slate-200 text-slate-500 font-semibold">
-                    <th className="px-6 py-3.5">Trip Ref</th>
-                    <th className="px-6 py-3.5">Route</th>
-                    <th className="px-6 py-3.5">Assigned Resource</th>
-                    <th className="px-6 py-3.5">Status</th>
+                  <tr className="bg-slate-50/75 border-b border-slate-200 text-slate-500 font-semibold font-mono uppercase tracking-wider text-xxs">
+                    <th className="px-6 py-3">Trip Ref</th>
+                    <th className="px-6 py-3">Route</th>
+                    <th className="px-6 py-3">Assigned Resource</th>
+                    <th className="px-6 py-3">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-slate-700">
@@ -132,27 +132,27 @@ export const DashboardPage: React.FC = () => {
                   ) : (
                     recentTrips.map((trip: any) => (
                       <tr key={trip.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="font-mono font-bold text-slate-950">{trip.tripNumber}</div>
+                        <td className="px-6 py-3.5">
+                          <div className="font-mono font-bold text-slate-900">{trip.tripNumber}</div>
                           <div className="text-xxs text-slate-400 mt-0.5 flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
                             {new Date(trip.scheduledAt).toLocaleDateString()}
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-3.5">
                           <div className="font-semibold text-slate-800 flex items-center gap-1.5">
                             <MapPin className="h-3.5 w-3.5 text-slate-400" />
                             {trip.source} → {trip.destination}
                           </div>
-                          <div className="text-xs text-slate-500 mt-0.5">
-                            Distance: {trip.plannedDistance} km | Weight: {trip.cargoWeight} kg
+                          <div className="text-xxs text-slate-500 mt-0.5">
+                            Distance: <span className="font-mono">{trip.plannedDistance} km</span> | Weight: <span className="font-mono">{trip.cargoWeight} kg</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="text-xs font-semibold text-slate-800">{trip.vehicle?.name}</div>
+                        <td className="px-6 py-3.5">
+                          <div className="font-semibold text-slate-800">{trip.vehicle?.name}</div>
                           <div className="text-xxs text-slate-500 font-mono mt-0.5">{trip.vehicle?.registrationNumber}</div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-3.5">
                           <StatusBadge status={trip.status} />
                         </td>
                       </tr>
@@ -166,22 +166,22 @@ export const DashboardPage: React.FC = () => {
 
         {/* Right Column: Fleet Status Breakdown */}
         <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h3 className="text-base font-bold text-slate-900 mb-1">Fleet Distribution</h3>
+          <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
+            <h3 className="text-sm font-mono uppercase tracking-wider text-slate-800 font-bold mb-1">Fleet Distribution</h3>
             <p className="text-xs text-slate-500 mb-6">Status breakdown of registered active trucks</p>
 
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1.5">
                   <span className="flex items-center gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-full bg-brand-600" />
+                    <span className="h-2 w-2 rounded-full bg-brand-500" />
                     On Trip (Active)
                   </span>
-                  <span>{activeVehicles} / {activeNonRetiredVehicles}</span>
+                  <span className="font-mono">{activeVehicles} / {activeNonRetiredVehicles}</span>
                 </div>
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-100 h-1.5 rounded overflow-hidden">
                   <div 
-                    className="bg-brand-600 h-full rounded-full transition-all duration-500" 
+                    className="bg-brand-600 h-full rounded transition-all duration-500" 
                     style={{ width: `${activeNonRetiredVehicles > 0 ? (activeVehicles / activeNonRetiredVehicles) * 100 : 0}%` }}
                   />
                 </div>
@@ -190,14 +190,14 @@ export const DashboardPage: React.FC = () => {
               <div>
                 <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1.5">
                   <span className="flex items-center gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
                     Available (Idle)
                   </span>
-                  <span>{availableVehicles} / {activeNonRetiredVehicles}</span>
+                  <span className="font-mono">{availableVehicles} / {activeNonRetiredVehicles}</span>
                 </div>
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-100 h-1.5 rounded overflow-hidden">
                   <div 
-                    className="bg-emerald-500 h-full rounded-full transition-all duration-500" 
+                    className="bg-emerald-500 h-full rounded transition-all duration-500" 
                     style={{ width: `${activeNonRetiredVehicles > 0 ? (availableVehicles / activeNonRetiredVehicles) * 100 : 0}%` }}
                   />
                 </div>
@@ -206,32 +206,32 @@ export const DashboardPage: React.FC = () => {
               <div>
                 <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1.5">
                   <span className="flex items-center gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                    <span className="h-2 w-2 rounded-full bg-amber-500" />
                     In Shop (Maintenance)
                   </span>
-                  <span>{inMaintenanceVehicles} / {activeNonRetiredVehicles}</span>
+                  <span className="font-mono">{inMaintenanceVehicles} / {activeNonRetiredVehicles}</span>
                 </div>
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-100 h-1.5 rounded overflow-hidden">
                   <div 
-                    className="bg-amber-500 h-full rounded-full transition-all duration-500" 
+                    className="bg-amber-500 h-full rounded transition-all duration-500" 
                     style={{ width: `${activeNonRetiredVehicles > 0 ? (inMaintenanceVehicles / activeNonRetiredVehicles) * 100 : 0}%` }}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-3 gap-2 text-center">
+            <div className="mt-8 pt-5 border-t border-slate-100 grid grid-cols-3 gap-2 text-center">
               <div>
-                <div className="text-lg font-bold text-slate-900">{availableVehicles}</div>
-                <div className="text-xxs text-slate-500 uppercase tracking-wider font-semibold">Available</div>
+                <div className="text-base font-bold text-slate-900 font-mono">{availableVehicles}</div>
+                <div className="text-xxs text-slate-400 uppercase tracking-wider font-semibold">Available</div>
               </div>
               <div>
-                <div className="text-lg font-bold text-slate-900">{draftTrips}</div>
-                <div className="text-xxs text-slate-500 uppercase tracking-wider font-semibold">Drafts</div>
+                <div className="text-base font-bold text-slate-900 font-mono">{draftTrips}</div>
+                <div className="text-xxs text-slate-400 uppercase tracking-wider font-semibold">Drafts</div>
               </div>
               <div>
-                <div className="text-lg font-bold text-slate-900">{completedTrips}</div>
-                <div className="text-xxs text-slate-500 uppercase tracking-wider font-semibold">Completed</div>
+                <div className="text-base font-bold text-slate-900 font-mono">{completedTrips}</div>
+                <div className="text-xxs text-slate-400 uppercase tracking-wider font-semibold">Completed</div>
               </div>
             </div>
           </div>

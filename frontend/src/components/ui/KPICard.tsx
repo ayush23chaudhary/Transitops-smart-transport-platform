@@ -23,7 +23,7 @@ export const KPICard: React.FC<KPICardProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm animate-pulse">
+      <div className="bg-white border border-slate-200 rounded-lg p-5 animate-pulse">
         <div className="flex justify-between items-start mb-4">
           <div className="h-4 bg-slate-200 rounded w-24"></div>
           <div className="h-8 bg-slate-200 rounded-full w-8"></div>
@@ -35,18 +35,18 @@ export const KPICard: React.FC<KPICardProps> = ({
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md">
+    <div className="bg-white border border-slate-200 rounded-lg p-5">
       <div className="flex justify-between items-start">
         <div>
-          <span className="text-sm font-medium text-slate-500">{title}</span>
-          <h4 className="text-3xl font-bold text-slate-900 mt-2">{value}</h4>
+          <span className="text-xs font-mono uppercase tracking-wider text-slate-500">{title}</span>
+          <h4 className="text-2xl font-bold text-slate-900 mt-2 font-mono tabular-nums">{value}</h4>
         </div>
-        <div className="p-3 bg-brand-50 rounded-xl text-brand-600">
-          <Icon className="h-5 w-5" />
+        <div className="p-2 bg-slate-50 border border-slate-100 rounded text-slate-600">
+          <Icon className="h-4 w-4" />
         </div>
       </div>
       {(description || trend) && (
-        <div className="mt-4 flex items-center space-x-2 text-xs">
+        <div className="mt-3 flex items-center space-x-2 text-xs">
           {trend && (
             <span
               className={`font-semibold ${
@@ -56,7 +56,7 @@ export const KPICard: React.FC<KPICardProps> = ({
               {trend.value}
             </span>
           )}
-          {description && <span className="text-slate-500">{description}</span>}
+          {description && <span className="text-slate-500 font-medium">{description}</span>}
         </div>
       )}
     </div>

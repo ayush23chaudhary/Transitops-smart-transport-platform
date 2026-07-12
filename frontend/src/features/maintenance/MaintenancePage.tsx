@@ -136,68 +136,69 @@ export const MaintenancePage: React.FC = () => {
         }
       />
 
-      <div className="flex items-center gap-4 bg-white p-4 border border-slate-200 rounded-xl shadow-sm">
-        <span className="text-sm font-semibold text-slate-700">Filter Status:</span>
-        {['', 'SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map((st) => (
-          <button
-            key={st}
-            onClick={() => setStatusFilter(st)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-              statusFilter === st
-                ? 'bg-brand-600 border-brand-600 text-white shadow-sm'
-                : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            {st || 'All'}
-          </button>
-        ))}
+      <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 border border-slate-200 rounded-lg shadow-sm items-center justify-between">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {['', 'SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map((st) => (
+            <button
+              key={st}
+              onClick={() => setStatusFilter(st)}
+              className={`px-3 py-1.5 rounded text-xs font-semibold border transition-all ${
+                statusFilter === st
+                  ? 'bg-slate-800 border-slate-800 text-white'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              {st || 'ALL RECORDS'}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-slate-500">Loading maintenance records...</div>
+          <div className="p-8 text-center text-slate-500 font-mono text-xs">Loading maintenance records...</div>
         ) : records?.length === 0 ? (
           <div className="p-12 text-center text-slate-400">
             <Wrench className="h-10 w-10 mx-auto mb-2 text-slate-300" />
-            <p>No maintenance records found.</p>
+            <p className="text-sm">No maintenance records found.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-sm">
+            <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold">
+                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold font-mono uppercase tracking-wider text-xxs">
                   <th className="px-6 py-3">Vehicle</th>
                   <th className="px-6 py-3">Type</th>
                   <th className="px-6 py-3">Description</th>
-                  <th className="px-6 py-3">Cost ($)</th>
-                  <th className="px-6 py-3">Dates</th>
+                  <th className="px-6 py-3">Cost</th>
+                  <th className="px-6 py-3">Timeline Dates</th>
                   <th className="px-6 py-3">Status</th>
                   {isAuthorized && <th className="px-6 py-3 text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
                 {records?.map((record) => (
-                  <tr key={record.id} className="hover:bg-slate-50/50">
-                    <td className="px-6 py-4 font-mono font-bold text-slate-900">{record.vehicle?.registrationNumber}</td>
-                    <td className="px-6 py-4">{record.maintenanceType}</td>
-                    <td className="px-6 py-4">{record.description || '-'}</td>
-                    <td className="px-6 py-4">{Number(record.cost).toLocaleString()}</td>
-                    <td className="px-6 py-4 text-xs">
-                      <div><span className="font-semibold">Sched:</span> {record.scheduledAt ? new Date(record.scheduledAt).toLocaleDateString() : '-'}</div>
-                      {record.startedAt && <div><span className="font-semibold text-brand-600">Start:</span> {new Date(record.startedAt).toLocaleDateString()}</div>}
-                      {record.completedAt && <div><span className="font-semibold text-emerald-600">End:</span> {new Date(record.completedAt).toLocaleDateString()}</div>}
+                  <tr key={record.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-3.5 font-mono font-bold text-slate-900">{record.vehicle?.registrationNumber}</td>
+                    <td className="px-6 py-3.5 font-medium">{record.maintenanceType}</td>
+                    <td className="px-6 py-3.5 max-w-xs truncate" title={record.description}>{record.description || '-'}</td>
+                    <td className="px-6 py-3.5 font-mono font-semibold text-slate-900">${Number(record.cost).toLocaleString()}</td>
+                    <td className="px-6 py-3.5 text-xxs leading-relaxed font-mono">
+                      <div><span className="text-slate-400 uppercase">SCHED:</span> {record.scheduledAt ? new Date(record.scheduledAt).toLocaleDateString() : '-'}</div>
+                      {record.startedAt && <div><span className="text-brand-600 uppercase">START:</span> {new Date(record.startedAt).toLocaleDateString()}</div>}
+                      {record.completedAt && <div><span className="text-emerald-600 uppercase">COMPL:</span> {new Date(record.completedAt).toLocaleDateString()}</div>}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-3.5">
                       <StatusBadge status={record.status} />
                     </td>
                     {isAuthorized && (
-                      <td className="px-6 py-4 text-right space-x-2">
+                      <td className="px-6 py-3.5 text-right space-x-1">
                         {record.status === 'SCHEDULED' && (
                           <>
-                            <Button variant="ghost" size="sm" onClick={() => handleOpenAction(record, 'start')} className="text-brand-600 hover:text-brand-700" title="Start">
-                              <Play className="h-4 w-4" />
+                            <Button variant="ghost" size="sm" onClick={() => handleOpenAction(record, 'start')} className="text-brand-600 hover:text-brand-700 p-1" title="Start">
+                              <Play className="h-3.5 w-3.5" />
                             </Button>
-                            <Button variant="ghost" size="sm" onClick={() => handleOpenAction(record, 'cancel')} className="text-red-600 hover:text-red-700" title="Cancel">
+                            <Button variant="ghost" size="sm" onClick={() => handleOpenAction(record, 'cancel')} className="text-red-600 hover:text-red-700 p-1" title="Cancel">
                               <Ban className="h-4 w-4" />
                             </Button>
                           </>

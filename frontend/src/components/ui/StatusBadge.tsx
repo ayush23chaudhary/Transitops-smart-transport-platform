@@ -36,6 +36,21 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
     IN_PROGRESS: { bg: 'bg-amber-50 border-amber-200', text: 'text-amber-700', label: 'In Progress' },
   };
 
+  const dotColor: Record<StatusType, string> = {
+    AVAILABLE: 'bg-emerald-500',
+    ON_TRIP: 'bg-sky-500',
+    IN_SHOP: 'bg-amber-500',
+    RETIRED: 'bg-red-500',
+    OFF_DUTY: 'bg-slate-400',
+    SUSPENDED: 'bg-red-600',
+    DRAFT: 'bg-slate-400',
+    DISPATCHED: 'bg-blue-500',
+    COMPLETED: 'bg-emerald-500',
+    CANCELLED: 'bg-red-500',
+    SCHEDULED: 'bg-indigo-500',
+    IN_PROGRESS: 'bg-amber-500',
+  };
+
   const current = config[normalized] || {
     bg: 'bg-slate-50 border-slate-200',
     text: 'text-slate-700',
@@ -44,8 +59,9 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${current.bg} ${current.text}`}
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium border ${current.bg} ${current.text}`}
     >
+      <span className={`h-1.5 w-1.5 rounded-full ${dotColor[normalized] || 'bg-slate-400'}`} />
       {current.label}
     </span>
   );

@@ -205,15 +205,15 @@ export const TripsPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Trips Table */}
-        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
           {tripsLoading ? (
-            <div className="p-8 text-center text-slate-500">Loading trips...</div>
+            <div className="p-8 text-center text-slate-500 font-mono text-xs">Loading trips...</div>
           ) : trips?.length === 0 ? (
-            <div className="p-8 text-center text-slate-400">No trips found matching filter.</div>
+            <div className="p-8 text-center text-slate-400 text-sm">No trips found matching filter.</div>
           ) : (
-            <table className="w-full text-left border-collapse text-sm">
+            <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold">
+                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold font-mono uppercase tracking-wider text-xxs">
                   <th className="px-6 py-3">Trip Number</th>
                   <th className="px-6 py-3">Route</th>
                   <th className="px-6 py-3">Scheduled At</th>
@@ -225,29 +225,29 @@ export const TripsPage: React.FC = () => {
                 {trips?.map((trip) => (
                   <tr
                     key={trip.id}
-                    className={`hover:bg-slate-50/50 cursor-pointer ${
-                      selectedTrip?.id === trip.id ? 'bg-brand-50/20' : ''
+                    className={`hover:bg-slate-50/50 cursor-pointer transition-colors ${
+                      selectedTrip?.id === trip.id ? 'bg-slate-50' : ''
                     }`}
                     onClick={() => setSelectedTrip(trip)}
                   >
-                    <td className="px-6 py-4 font-mono font-bold text-slate-900">{trip.tripNumber}</td>
-                    <td className="px-6 py-4">
-                      <div className="truncate max-w-[200px]" title={`${trip.source} → ${trip.destination}`}>
+                    <td className="px-6 py-3.5 font-mono font-bold text-slate-900">{trip.tripNumber}</td>
+                    <td className="px-6 py-3.5">
+                      <div className="font-semibold text-slate-800 truncate max-w-[200px]" title={`${trip.source} → ${trip.destination}`}>
                         {trip.source} → {trip.destination}
                       </div>
                     </td>
-                    <td className="px-6 py-4">{new Date(trip.scheduledAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-3.5 font-mono">{new Date(trip.scheduledAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-3.5">
                       <StatusBadge status={trip.status} />
                     </td>
-                    <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                    <td className="px-6 py-3.5" onClick={(e) => e.stopPropagation()}>
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-brand-600 hover:text-brand-700 flex items-center gap-1"
+                        className="text-brand-600 hover:text-brand-700 flex items-center gap-1 p-1"
                         onClick={() => setSelectedTrip(trip)}
                       >
-                        <Eye className="h-4 w-4" /> View
+                        <Eye className="h-3.5 w-3.5" /> View
                       </Button>
                     </td>
                   </tr>
@@ -258,13 +258,13 @@ export const TripsPage: React.FC = () => {
         </div>
 
         {/* Selected Trip Details Drawer/Panel */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm h-fit space-y-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-sm h-fit space-y-6">
           {selectedTrip ? (
             <>
               <div className="flex justify-between items-start border-b border-slate-100 pb-4">
                 <div>
-                  <span className="text-xs text-slate-400 font-mono font-bold">{selectedTrip.id}</span>
-                  <h3 className="text-lg font-bold text-slate-900">{selectedTrip.tripNumber}</h3>
+                  <span className="text-xxs text-slate-400 font-mono uppercase tracking-wider block">ID: {selectedTrip.id.substring(0, 8)}...</span>
+                  <h3 className="text-base font-bold text-slate-900">{selectedTrip.tripNumber}</h3>
                 </div>
                 <StatusBadge status={selectedTrip.status} />
               </div>

@@ -26,32 +26,31 @@ export const DriversPage: React.FC = () => {
     });
   }, [drivers, search, statusFilter]);
 
+  const isLicenseExpired = (expiryDateStr: string) => {
+    return new Date(expiryDateStr) < new Date();
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Workforce Management (Drivers)"
-        description="Extension point for Developer 3 (Workforce)"
+        title="Workforce Registry"
+        description="Verify driver status, dispatch safety eligibility, and route completion statistics."
       />
 
-      <div className="bg-purple-50 border border-purple-200 text-purple-800 p-4 rounded-xl text-sm">
-        <h4 className="font-semibold mb-1">Developer 3 Scope (Workforce)</h4>
-        <p>This module contains Driver rosters, safety scores, and auth roles. The backend integration routes are mounted at <code>GET /api/drivers</code>.</p>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 border border-slate-200 rounded-xl shadow-sm">
+      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 border border-slate-200 rounded-lg shadow-sm">
         <Input
           label="Search Drivers"
           placeholder="Name, email, license..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="max-w-md"
+          className="max-w-md w-full"
         />
         <Select
           label="Status"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
           options={[
-            { value: '', label: 'All' },
+            { value: '', label: 'ALL STATUSES' },
             { value: 'AVAILABLE', label: 'AVAILABLE' },
             { value: 'ON_TRIP', label: 'ON_TRIP' },
             { value: 'OFF_DUTY', label: 'OFF_DUTY' },
@@ -61,14 +60,14 @@ export const DriversPage: React.FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="text-slate-500 text-sm">Loading drivers...</div>
+        <div className="text-slate-500 text-xs font-mono">Loading drivers...</div>
       ) : error ? (
-        <div className="text-red-600 text-sm">Failed to load drivers.</div>
+        <div className="text-red-600 text-xs font-mono">Failed to load drivers.</div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full text-left border-collapse text-sm">
+        <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+          <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold">
+              <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold font-mono uppercase tracking-wider text-xxs">
                 <th className="px-6 py-3">Name</th>
                 <th className="px-6 py-3">Email</th>
                 <th className="px-6 py-3">License Number</th>
@@ -83,28 +82,39 @@ export const DriversPage: React.FC = () => {
               {filteredDrivers.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-6 py-10 text-center text-slate-500">
-                    No drivers found.
+                    No drivers found in registry.
                   </td>
                 </tr>
               ) : (
-                filteredDrivers.map((driver) => (
-                  <tr key={driver.id} className="hover:bg-slate-50/50">
-                    <td className="px-6 py-4 font-semibold text-slate-900">{driver.name}</td>
-                    <td className="px-6 py-4">{driver.email}</td>
-                    <td className="px-6 py-4 font-mono">{driver.licenseNumber}</td>
-                    <td className="px-6 py-4">{new Date(driver.licenseExpiryDate).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 font-bold text-slate-900">{driver.safetyScore.toFixed(1)}</td>
-                    <td className="px-6 py-4">
-                      <StatusBadge status={driver.status} />
-                    </td>
-                    <td className="px-6 py-4">{driver.completionRate}%</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${driver.dispatchEligible ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-                        {driver.dispatchEligible ? 'Yes' : 'No'}
-                      </span>
-                    </td>
-                  </tr>
-                ))
+                filteredDrivers.map((driver) => {
+                  const expired = isLicenseExpired(driver.licenseExpiryDate);
+                  return (
+                    <tr key={driver.id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="px-6 py-3.5 font-semibold text-slate-900">{driver.name}</td>
+                      <td className="px-6 py-3.5">{driver.email}</td>
+                      <td className="px-6 py-3.5 font-mono">{driver.licenseNumber}</td>
+                      <td className="px-6 py-3.5">
+                        {expired ? (
+                          <span className="inline-flex items-center gap-1 text-red-600 font-semibold bg-red-50 border border-red-200 px-2 py-0.5 rounded text-xxs font-mono uppercase">
+                            Expired (Blocked)
+                          </span>
+                        ) : (
+                          <span className="font-mono">{new Date(driver.licenseExpiryDate).toLocaleDateString()}</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-3.5 font-mono font-bold text-slate-900">{driver.safetyScore.toFixed(1)}</td>
+                      <td className="px-6 py-3.5">
+                        <StatusBadge status={driver.status} />
+                      </td>
+                      <td className="px-6 py-3.5 font-mono">{driver.completionRate}%</td>
+                      <td className="px-6 py-3.5">
+                        <span className={`inline-flex items-center rounded px-2 py-0.5 text-xxs font-mono uppercase font-semibold border ${driver.dispatchEligible && !expired ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                          {driver.dispatchEligible && !expired ? 'Eligible' : 'Blocked'}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

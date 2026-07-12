@@ -128,68 +128,67 @@ export const VehiclesPage: React.FC = () => {
         }
       />
 
-      <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 border border-slate-200 rounded-xl shadow-sm">
+      <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 border border-slate-200 rounded-lg shadow-sm items-center justify-between">
         <Input
-          placeholder="Search by name or reg..."
+          placeholder="Search by name or registration..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="max-w-xs"
+          className="max-w-xs w-full"
         />
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-semibold text-slate-700 ml-2">Status:</span>
+        <div className="flex items-center gap-1.5 flex-wrap">
           {['', 'AVAILABLE', 'ON_TRIP', 'IN_SHOP', 'RETIRED'].map((st) => (
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+              className={`px-3 py-1.5 rounded text-xs font-semibold border transition-all ${
                 statusFilter === st
-                  ? 'bg-brand-600 border-brand-600 text-white shadow-sm'
+                  ? 'bg-slate-800 border-slate-800 text-white'
                   : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
               }`}
             >
-              {st || 'All'}
+              {st || 'ALL VEHICLES'}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-slate-500">Loading vehicles...</div>
+          <div className="p-8 text-center text-slate-500 font-mono text-xs">Loading vehicles...</div>
         ) : vehicles?.length === 0 ? (
           <div className="p-12 text-center text-slate-400">
             <Car className="h-10 w-10 mx-auto mb-2 text-slate-300" />
-            <p>No vehicles found.</p>
+            <p className="text-sm">No vehicles found in fleet registry.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-sm">
+            <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold">
+                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold font-mono uppercase tracking-wider text-xxs">
                   <th className="px-6 py-3">Registration</th>
                   <th className="px-6 py-3">Name / Model</th>
                   <th className="px-6 py-3">Type</th>
-                  <th className="px-6 py-3">Capacity (kg)</th>
-                  <th className="px-6 py-3">Odometer (km)</th>
+                  <th className="px-6 py-3">Capacity</th>
+                  <th className="px-6 py-3">Odometer</th>
                   <th className="px-6 py-3">Status</th>
                   {isAuthorized && <th className="px-6 py-3 text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
                 {vehicles?.map((vehicle) => (
-                  <tr key={vehicle.id} className="hover:bg-slate-50/50">
-                    <td className="px-6 py-4 font-mono font-bold text-slate-900">{vehicle.registrationNumber}</td>
-                    <td className="px-6 py-4">{vehicle.name}</td>
-                    <td className="px-6 py-4">{vehicle.type}</td>
-                    <td className="px-6 py-4">{Number(vehicle.maxLoadCapacity).toLocaleString()}</td>
-                    <td className="px-6 py-4">{Number(vehicle.odometer).toLocaleString()}</td>
-                    <td className="px-6 py-4">
+                  <tr key={vehicle.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-3.5 font-mono font-bold text-slate-900">{vehicle.registrationNumber}</td>
+                    <td className="px-6 py-3.5 font-medium">{vehicle.name}</td>
+                    <td className="px-6 py-3.5">{vehicle.type}</td>
+                    <td className="px-6 py-3.5 font-mono tabular-nums">{Number(vehicle.maxLoadCapacity).toLocaleString()} kg</td>
+                    <td className="px-6 py-3.5 font-mono tabular-nums">{Number(vehicle.odometer).toLocaleString()} km</td>
+                    <td className="px-6 py-3.5">
                       <StatusBadge status={vehicle.status} />
                     </td>
                     {isAuthorized && (
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-6 py-3.5 text-right">
                         <Button variant="ghost" size="sm" onClick={() => handleOpenForm(vehicle)}>
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-3.5 w-3.5" />
                         </Button>
                       </td>
                     )}

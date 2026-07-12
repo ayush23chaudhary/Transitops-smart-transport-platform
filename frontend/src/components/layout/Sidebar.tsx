@@ -49,8 +49,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Logo Section */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800">
           {!collapsed && (
-            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">
-              TransitOps
+            <span className="text-xl font-bold tracking-wider text-white uppercase font-mono">
+              Transit<span className="text-brand-500">Ops</span>
             </span>
           )}
           {collapsed && (
@@ -83,10 +83,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               key={item.name}
               to={item.to}
               className={({ isActive }) =>
-                `flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                `flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   isActive
-                    ? 'bg-brand-600 text-white shadow-sm'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
+                    ? 'bg-slate-800 text-white border-l-4 border-brand-500 rounded-l-none'
+                    : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
                 } ${collapsed ? 'justify-center' : ''}`
               }
               title={collapsed ? item.name : undefined}
