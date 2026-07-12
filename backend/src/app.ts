@@ -16,19 +16,31 @@ import analyticsRoutes from './modules/analytics/analytics.routes';
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Configured CORS middleware for production-like safety
+const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS policy violation: unauthorized origin.'));
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 
-// Health check endpoint
-app.get('/api/health', (req: Request, res: Response) => {
+// Health check endpoint (compliant with direct /health and api-prefixed checks)
+const healthHandler = (req: Request, res: Response) => {
   res.status(200).json({
-    success: true,
-    data: {
-      status: 'ok',
-    },
+    status: 'ok',
   });
-});
+};
+app.get('/health', healthHandler);
+app.get('/api/health', healthHandler);
 
 // Mount modular routes
 app.use('/api/auth', authRoutes);
@@ -47,12 +59,20 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// Global Error Handler
+// Global Error Handler (Sanitizes internal server details in production)
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error('Unhandled Error:', err);
-  res.status(err.status || 500).json({
+  console.error('Unhandled Error:', err.message || err);
+  
+  const status = err.status || 500;
+  let message = err.message || 'An unexpected error occurred';
+  
+  if (process.env.NODE_ENV === 'production' && status === 500) {
+    message = 'Internal Server Error';
+  }
+
+  res.status(status).json({
     success: false,
-    message: err.message || 'An unexpected error occurred',
+    message,
   });
 });
 

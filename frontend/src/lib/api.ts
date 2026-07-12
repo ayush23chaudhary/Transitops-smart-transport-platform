@@ -17,6 +17,12 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const resData = await response.json();
 
   if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.clear();
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
+    }
     throw new Error(resData.message || `API request failed with status ${response.status}`);
   }
 
