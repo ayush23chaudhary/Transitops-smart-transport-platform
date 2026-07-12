@@ -203,7 +203,7 @@ export const VehiclesPage: React.FC = () => {
       {isFormOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen p-4">
-            <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={handleCloseForm} />
+            <div className="fixed inset-0 bg-slate-900/60" onClick={handleCloseForm} />
             <div className="bg-white rounded-xl shadow-xl overflow-hidden max-w-lg w-full z-50 p-6 space-y-4">
               <div className="flex justify-between items-center border-b pb-3">
                 <h3 className="font-bold text-slate-800 text-lg">{editingVehicle ? 'Edit Vehicle' : 'Add New Vehicle'}</h3>
