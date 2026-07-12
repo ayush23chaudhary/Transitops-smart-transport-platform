@@ -50,9 +50,14 @@ export const TripsPage: React.FC = () => {
     queryFn: () => api.get<any[]>('/vehicles'),
   });
 
-  const { data: drivers } = useQuery({
-    queryKey: ['drivers'],
-    queryFn: () => api.get<any[]>('/drivers'),
+  const { data: availableVehicles } = useQuery({
+    queryKey: ['availableVehicles'],
+    queryFn: () => api.get<any[]>('/vehicles/available'),
+  });
+
+  const { data: availableDrivers } = useQuery({
+    queryKey: ['availableDrivers'],
+    queryFn: () => api.get<any[]>('/drivers/available'),
   });
 
   // Mutations
@@ -60,6 +65,8 @@ export const TripsPage: React.FC = () => {
     mutationFn: (body: any) => api.post('/trips', body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['trips'] });
+      queryClient.invalidateQueries({ queryKey: ['availableVehicles'] });
+      queryClient.invalidateQueries({ queryKey: ['availableDrivers'] });
       queryClient.invalidateQueries({ queryKey: ['dashboardSummary'] });
       toast.success('Trip draft created successfully');
       setIsCreateOpen(false);
@@ -85,6 +92,8 @@ export const TripsPage: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['trips'] });
       queryClient.invalidateQueries({ queryKey: ['vehicles'] });
       queryClient.invalidateQueries({ queryKey: ['drivers'] });
+      queryClient.invalidateQueries({ queryKey: ['availableVehicles'] });
+      queryClient.invalidateQueries({ queryKey: ['availableDrivers'] });
       queryClient.invalidateQueries({ queryKey: ['dashboardSummary'] });
       setSelectedTrip(data);
       toast.success('Trip successfully dispatched!');
@@ -101,6 +110,8 @@ export const TripsPage: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['trips'] });
       queryClient.invalidateQueries({ queryKey: ['vehicles'] });
       queryClient.invalidateQueries({ queryKey: ['drivers'] });
+      queryClient.invalidateQueries({ queryKey: ['availableVehicles'] });
+      queryClient.invalidateQueries({ queryKey: ['availableDrivers'] });
       queryClient.invalidateQueries({ queryKey: ['dashboardSummary'] });
       setSelectedTrip(data);
       toast.success('Trip completed successfully!');
@@ -117,6 +128,8 @@ export const TripsPage: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['trips'] });
       queryClient.invalidateQueries({ queryKey: ['vehicles'] });
       queryClient.invalidateQueries({ queryKey: ['drivers'] });
+      queryClient.invalidateQueries({ queryKey: ['availableVehicles'] });
+      queryClient.invalidateQueries({ queryKey: ['availableDrivers'] });
       queryClient.invalidateQueries({ queryKey: ['dashboardSummary'] });
       setSelectedTrip(data);
       toast.success('Trip cancelled successfully');
@@ -432,9 +445,9 @@ export const TripsPage: React.FC = () => {
                     placeholder="Select Vehicle"
                     value={newTrip.vehicleId}
                     onChange={(e) => setNewTrip({ ...newTrip, vehicleId: e.target.value })}
-                    options={vehicles?.map((v) => ({
+                    options={availableVehicles?.map((v) => ({
                       value: v.id,
-                      label: `${v.registrationNumber} - ${v.name} (Max: ${v.maxLoadCapacity}kg) - [${v.status}]`,
+                      label: `${v.registrationNumber} - ${v.name} (Max: ${v.maxLoadCapacity}kg)`,
                     })) || []}
                     required
                   />
@@ -443,22 +456,35 @@ export const TripsPage: React.FC = () => {
                     placeholder="Select Driver"
                     value={newTrip.driverId}
                     onChange={(e) => setNewTrip({ ...newTrip, driverId: e.target.value })}
-                    options={drivers?.map((d) => ({
+                    options={availableDrivers?.map((d) => ({
                       value: d.id,
-                      label: `${d.name} (${d.licenseCategory}) - [${d.status}]`,
+                      label: `${d.name} (${d.licenseCategory})`,
                     })) || []}
                     required
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    label="Cargo Weight (kg)"
-                    type="number"
-                    value={newTrip.cargoWeight}
-                    onChange={(e) => setNewTrip({ ...newTrip, cargoWeight: Number(e.target.value) })}
-                    required
-                  />
+                  <div className="flex flex-col">
+                    <Input
+                      label="Cargo Weight (kg)"
+                      type="number"
+                      value={newTrip.cargoWeight}
+                      onChange={(e) => setNewTrip({ ...newTrip, cargoWeight: Number(e.target.value) })}
+                      required
+                    />
+                    {(() => {
+                      const selectedV = availableVehicles?.find((v: any) => v.id === newTrip.vehicleId);
+                      if (selectedV && Number(newTrip.cargoWeight) > Number(selectedV.maxLoadCapacity)) {
+                        return (
+                          <span className="text-xxs text-red-600 font-semibold mt-1">
+                            Vehicle capacity: {selectedV.maxLoadCapacity} kg. Cargo weight: {newTrip.cargoWeight} kg. Capacity exceeded by {Number(newTrip.cargoWeight) - Number(selectedV.maxLoadCapacity)} kg. Dispatch blocked.
+                          </span>
+                        );
+                      }
+                      return null;
+                    })()}
+                  </div>
                   <Input
                     label="Planned Distance (km)"
                     type="number"
