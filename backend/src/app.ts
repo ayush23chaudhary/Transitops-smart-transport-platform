@@ -13,6 +13,7 @@ import driverRoutes from './modules/drivers/driver.routes';
 import maintenanceRoutes from './modules/maintenance/maintenance.routes';
 import financeRoutes from './modules/finance/finance.routes';
 import analyticsRoutes from './modules/analytics/analytics.routes';
+import settingsRoutes from './modules/settings/settings.routes';
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use('/api/drivers', driverRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/finance', financeRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // 404 Handler
 app.use((req: Request, res: Response) => {

@@ -12,7 +12,12 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Settings,
 } from 'lucide-react';
+
+const settingsNav = [
+  { name: 'Settings', to: '/settings', icon: Settings },
+];
 
 interface SidebarProps {
   collapsed: boolean;
@@ -131,6 +136,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {collapsed && <div className="border-t border-slate-800 my-2 mx-2" />}
 
           {reportingNav.map((item) => (
+            <NavLink
+              key={item.name}
+              to={item.to}
+              className={({ isActive }) => navItemClass(isActive, collapsed)}
+              title={collapsed ? item.name : undefined}
+            >
+              <item.icon className="h-4 w-4 flex-shrink-0" />
+              {!collapsed && <span className="ml-3">{item.name}</span>}
+            </NavLink>
+          ))}
+
+          {/* Section: Configuration */}
+          {!collapsed && (
+            <div className="px-2 pb-1.5 pt-4">
+              <span className="text-xxs font-mono uppercase tracking-widest text-slate-600 font-semibold">
+                Configuration
+              </span>
+            </div>
+          )}
+          {collapsed && <div className="border-t border-slate-800 my-2 mx-2" />}
+
+          {settingsNav.map((item) => (
             <NavLink
               key={item.name}
               to={item.to}

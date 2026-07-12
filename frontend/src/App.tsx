@@ -8,6 +8,7 @@ import { TripsPage } from './features/trips/TripsPage';
 import { MaintenancePage } from './features/maintenance/MaintenancePage';
 import { FinancePage } from './features/finance/FinancePage';
 import { AnalyticsPage } from './features/analytics/AnalyticsPage';
+import { SettingsPage } from './features/settings/SettingsPage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="maintenance" element={<MaintenancePage />} />
           <Route path="finance" element={<FinancePage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="settings" element={<SettingsPage />} />
           {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Route>
