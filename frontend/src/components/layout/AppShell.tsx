@@ -54,9 +54,9 @@ export const AppShell: React.FC = () => {
           <div className="relative flex flex-col w-64 bg-slate-900 text-white z-50">
             <Sidebar
               collapsed={false}
-              setCollapsed={() => {}}
               user={user}
               onLogout={handleLogout}
+              onClose={() => setMobileMenuOpen(false)}
             />
           </div>
         </div>
