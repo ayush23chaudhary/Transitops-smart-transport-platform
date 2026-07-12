@@ -17,7 +17,11 @@ import analyticsRoutes from './modules/analytics/analytics.routes';
 const app = express();
 
 // Configured CORS middleware for production-like safety
-const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
+const allowedOrigins = [
+  'https://transitops-smart-transport-platform.vercel.app',
+  'https://transitops-smart-transport-platform-n20t0isdg.vercel.app',
+  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [])
+];
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || process.env.NODE_ENV !== 'production') {
