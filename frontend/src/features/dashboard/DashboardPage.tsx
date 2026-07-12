@@ -66,6 +66,71 @@ export const DashboardPage: React.FC = () => {
         description="Real-time terminal logistics, fleet distribution, and driver assignments."
       />
 
+      {/* Fleet Status Bar — real-time segmented strip */}
+      {totalVehicles > 0 && (
+        <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 status-dot-live" />
+              <span className="text-xxs font-mono uppercase tracking-widest text-slate-500 font-semibold">Fleet Status — Live</span>
+            </div>
+            <span className="text-xxs font-mono text-slate-400 uppercase tracking-wider">{totalVehicles} total units</span>
+          </div>
+
+          {/* Segmented bar */}
+          <div className="flex w-full h-2 rounded overflow-hidden mb-3">
+            {availableVehicles > 0 && (
+              <div
+                className="bg-emerald-400 transition-all"
+                style={{ width: `${(availableVehicles / totalVehicles) * 100}%` }}
+                title={`Available: ${availableVehicles}`}
+              />
+            )}
+            {activeVehicles > 0 && (
+              <div
+                className="bg-sky-400 transition-all"
+                style={{ width: `${(activeVehicles / totalVehicles) * 100}%` }}
+                title={`On Trip: ${activeVehicles}`}
+              />
+            )}
+            {inMaintenanceVehicles > 0 && (
+              <div
+                className="bg-amber-400 transition-all"
+                style={{ width: `${(inMaintenanceVehicles / totalVehicles) * 100}%` }}
+                title={`In Shop: ${inMaintenanceVehicles}`}
+              />
+            )}
+            {retiredVehicles > 0 && (
+              <div
+                className="bg-slate-300 transition-all"
+                style={{ width: `${(retiredVehicles / totalVehicles) * 100}%` }}
+                title={`Retired: ${retiredVehicles}`}
+              />
+            )}
+          </div>
+
+          {/* Legend */}
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm bg-emerald-400" />
+              <span className="text-xxs font-mono text-slate-500 uppercase tracking-wider">Available <strong className="text-slate-800">{availableVehicles}</strong></span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm bg-sky-400 status-dot-live" />
+              <span className="text-xxs font-mono text-slate-500 uppercase tracking-wider">On Trip <strong className="text-slate-800">{activeVehicles}</strong></span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm bg-amber-400" />
+              <span className="text-xxs font-mono text-slate-500 uppercase tracking-wider">In Shop <strong className="text-slate-800">{inMaintenanceVehicles}</strong></span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm bg-slate-300" />
+              <span className="text-xxs font-mono text-slate-500 uppercase tracking-wider">Retired <strong className="text-slate-800">{retiredVehicles}</strong></span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* KPI Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <KPICard
@@ -97,6 +162,7 @@ export const DashboardPage: React.FC = () => {
           loading={isLoading}
         />
       </div>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Recent Trips & Operations */}
