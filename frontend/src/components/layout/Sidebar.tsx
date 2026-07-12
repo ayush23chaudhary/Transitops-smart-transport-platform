@@ -1,0 +1,107 @@
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Truck,
+  Users,
+  MapPin,
+  Wrench,
+  DollarSign,
+  BarChart3,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
+
+interface SidebarProps {
+  collapsed: boolean;
+  setCollapsed: (collapsed: boolean) => void;
+  user: { name: string; email: string; role: string } | null;
+  onLogout: () => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({
+  collapsed,
+  setCollapsed,
+  user,
+  onLogout,
+}) => {
+  const navItems = [
+    { name: 'Overview', to: '/dashboard', icon: LayoutDashboard },
+    { name: 'Vehicles', to: '/vehicles', icon: Truck },
+    { name: 'Drivers', to: '/drivers', icon: Users },
+    { name: 'Trips', to: '/trips', icon: MapPin },
+    { name: 'Maintenance', to: '/maintenance', icon: Wrench },
+    { name: 'Fuel & Expenses', to: '/finance', icon: DollarSign },
+    { name: 'Analytics', to: '/analytics', icon: BarChart3 },
+  ];
+
+  return (
+    <div
+      className={`bg-slate-900 text-slate-100 flex flex-col justify-between border-r border-slate-800 transition-all duration-300 ${
+        collapsed ? 'w-20' : 'w-64'
+      }`}
+    >
+      <div>
+        {/* Logo Section */}
+        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800">
+          {!collapsed && (
+            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">
+              TransitOps
+            </span>
+          )}
+          {collapsed && (
+            <span className="text-xl font-bold text-brand-500 mx-auto">TO</span>
+          )}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-100"
+          >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </button>
+        </div>
+
+        {/* Navigation Items */}
+        <nav className="mt-6 px-3 space-y-1">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.name}
+              to={item.to}
+              className={({ isActive }) =>
+                `flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  isActive
+                    ? 'bg-brand-600 text-white'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
+                } ${collapsed ? 'justify-center' : ''}`
+              }
+              title={collapsed ? item.name : undefined}
+            >
+              <item.icon className="h-5 w-5 flex-shrink-0" />
+              {!collapsed && <span className="ml-3">{item.name}</span>}
+            </NavLink>
+          ))}
+        </nav>
+      </div>
+
+      {/* User Session Info / Logout */}
+      <div className="border-t border-slate-800 p-4">
+        {!collapsed && user && (
+          <div className="mb-4">
+            <p className="text-sm font-semibold text-slate-200 truncate">{user.name}</p>
+            <p className="text-xs text-slate-500 truncate">{user.role}</p>
+          </div>
+        )}
+        <button
+          onClick={onLogout}
+          className={`flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-red-950/40 hover:text-red-300 transition-colors ${
+            collapsed ? 'justify-center' : ''
+          }`}
+          title={collapsed ? 'Log Out' : undefined}
+        >
+          <LogOut className="h-5 w-5 flex-shrink-0" />
+          {!collapsed && <span className="ml-3">Log Out</span>}
+        </button>
+      </div>
+    </div>
+  );
+};
